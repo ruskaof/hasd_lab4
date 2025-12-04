@@ -344,32 +344,11 @@ func (r *Reader) Read(p []byte) (int, error) {
 	}
 
 	if !r.headerRead {
-		header, err := ReadFrameHeader(r.src)
+		_, err := ReadFrameHeader(r.src)
 		if err != nil {
 			return 0, err
 		}
-		if header.Version != 1 {
-			return 0, errors.New("invalid LZ4 version")
-		}
-		if !header.BlocksIndependentFlag {
-			return 0, errors.New("blocks independent flag must be enabled")
-		}
-		if header.BlocksChecksumFlag {
-			return 0, errors.New("blocks checksum flag is not supported")
-		}
-		if header.ContentSizeFlag {
-			return 0, errors.New("content size flag is not supported")
-		}
 
-		if header.DictIDFlag {
-			return 0, errors.New("dict ID flag is not supported")
-		}
-		if header.ContentSize > 0 {
-			return 0, errors.New("content size is not supported")
-		}
-		if header.DictID > 0 {
-			return 0, errors.New("dict ID is not supported")
-		}
 		r.headerRead = true
 	}
 
